@@ -2,6 +2,7 @@
 using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Data;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace MagicVilla_VillaAPI.Controllers
 {
@@ -10,15 +11,18 @@ namespace MagicVilla_VillaAPI.Controllers
     public class VillaAPIController : Controller
     {       
         private readonly AppDbContext _db;
-        public VillaAPIController(AppDbContext db)
+        private  readonly IMapper _mapper;
+        public VillaAPIController(AppDbContext db, IMapper mapper)
         {
             _db = db;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public  ActionResult<IEnumerable<VillaDto>> GetVillas()
+        public async  Task<ActionResult<IEnumerable<VillaDto>>> GetVillas()
         {
-            return Ok(_db.villas.ToList());
+            IEnumerable<Villa> villaList = await _db.villas.ToListAsync();
+            return Ok(_mapper.Map<List<VillaDto>>(villaList));
         }
         [HttpGet("{id:int}", Name = "getOneVilla")]
         public async Task<ActionResult<VillaDto>> getOneVilla(int id)
@@ -32,30 +36,32 @@ namespace MagicVilla_VillaAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(VillaDto);
+            return Ok(_mapper.Map<VillaDto>(VillaDto));
         }
         [HttpPost]
-        public async Task<ActionResult<VillaDto>> createNewVilla([FromBody] VillaCreateDto villaDto)
+        public async Task<ActionResult<VillaDto>> createNewVilla([FromBody] VillaCreateDto createVillaDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            if(villaDto == null)
+            if(createVillaDto == null)
             {
                 return BadRequest();
             }
             var idNew = _db.villas.OrderByDescending(u => u.Id).FirstOrDefault().Id + 1;
+
+
             Villa model = new()
             {
-                Amenity = villaDto.Amenity,
-                Details = villaDto.Details,
+                Amenity = createVillaDto.Amenity,
+                Details = createVillaDto.Details,
                 Id = idNew,
-                ImageUrl = villaDto.ImageUrl,
-                Name = villaDto.Name,
-                Occupancy = villaDto.Occupancy,
-                Rate = villaDto.Rate,
-                Sqft = villaDto.Sqft
+                ImageUrl = createVillaDto.ImageUrl,
+                Name = createVillaDto.Name,
+                Occupancy = createVillaDto.Occupancy,
+                Rate = createVillaDto.Rate,
+                Sqft = createVillaDto.Sqft
             };
             await _db.villas.AddAsync(model);
             await _db.SaveChangesAsync();
@@ -81,32 +87,22 @@ namespace MagicVilla_VillaAPI.Controllers
 
 
         [HttpPut]
-        public async Task<ActionResult<VillaDto>> updateVilla([FromBody] VillaUpdateDto villaDto)
+        public async Task<ActionResult<VillaDto>> updateVilla([FromBody] VillaUpdateDto updateVillaDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            if (villaDto == null)
+            if (updateVillaDto == null)
             {
                 return BadRequest();
             }
-            var villaFind = await  _db.villas.AsNoTracking().FirstOrDefaultAsync(u => u.Id == villaDto.Id);
+            var villaFind = await  _db.villas.AsNoTracking().FirstOrDefaultAsync(u => u.Id == updateVillaDto.Id);
             if(villaFind == null)
             {
                 return NotFound();
             }
-            Villa model = new()
-            {
-                Amenity = villaDto.Amenity,
-                Details = villaDto.Details,
-                Id = villaDto.Id,
-                ImageUrl = villaDto.ImageUrl,
-                Name = villaDto.Name,
-                Occupancy = villaDto.Occupancy,
-                Rate = villaDto.Rate,
-                Sqft = villaDto.Sqft
-            };
+            Villa model = _mapper.Map<Villa>(updateVillaDto);
             _db.villas.Update(model);
             await _db.SaveChangesAsync();
 
