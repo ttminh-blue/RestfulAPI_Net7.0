@@ -1,15 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Data;
+using MagicVilla_VillaAPI.Logging;
+
 namespace MagicVilla_VillaAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class VillaAPIController : Controller
     {       
-        private readonly ILogger<VillaAPIController> _logger;
+        private readonly ILogging _logger;
 
-        public VillaAPIController(ILogger<VillaAPIController> logger)
+        public VillaAPIController(ILogging logger)
         {
             _logger = logger;
         }
