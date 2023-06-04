@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace MagicVilla_VillaAPI.Controllers
 {
@@ -15,18 +16,18 @@ namespace MagicVilla_VillaAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<VillaDto>> GetVillas()
+        public  ActionResult<IEnumerable<VillaDto>> GetVillas()
         {
             return Ok(_db.villas.ToList());
         }
         [HttpGet("{id:int}", Name = "getOneVilla")]
-        public ActionResult<VillaDto> getOneVilla(int id)
+        public async Task<ActionResult<VillaDto>> getOneVilla(int id)
         {
             if (id == 0)    
             {
                 return BadRequest();
             }
-            var VillaDto = _db.villas.FirstOrDefault(u => u.Id == id);
+            var VillaDto = await _db.villas.FirstOrDefaultAsync(u => u.Id == id);
             if (VillaDto == null)
             {
                 return NotFound();
@@ -34,7 +35,7 @@ namespace MagicVilla_VillaAPI.Controllers
             return Ok(VillaDto);
         }
         [HttpPost]
-        public ActionResult<VillaDto> createNewVilla([FromBody] VillaDto villaDto)
+        public async Task<ActionResult<VillaDto>> createNewVilla([FromBody] VillaCreateDto villaDto)
         {
             if (!ModelState.IsValid)
             {
@@ -44,42 +45,43 @@ namespace MagicVilla_VillaAPI.Controllers
             {
                 return BadRequest();
             }
-            villaDto.Id = _db.villas.OrderByDescending(u => u.Id).FirstOrDefault().Id + 1;
+            var idNew = _db.villas.OrderByDescending(u => u.Id).FirstOrDefault().Id + 1;
             Villa model = new()
             {
                 Amenity = villaDto.Amenity,
                 Details = villaDto.Details,
-                Id = villaDto.Id,
+                Id = idNew,
                 ImageUrl = villaDto.ImageUrl,
                 Name = villaDto.Name,
                 Occupancy = villaDto.Occupancy,
                 Rate = villaDto.Rate,
                 Sqft = villaDto.Sqft
             };
-            _db.villas.Add(model);
-            _db.SaveChanges();
+            await _db.villas.AddAsync(model);
+            await _db.SaveChangesAsync();
 
-            return CreatedAtRoute("getOneVilla", new {id = villaDto.Id},villaDto);
+            return CreatedAtRoute("getOneVilla", new {id = model.Id},model);
         }
         [HttpDelete("{id:int}", Name = "DeleteOneVilla")]
-        public IActionResult DeleteOneVilla(int id)
+        public async Task<IActionResult> DeleteOneVilla(int id)
         {
             if(id == null || id == 0 )
             {
                 return BadRequest();
             }
-            var findVilla = _db.villas.FirstOrDefault(v => v.Id == id);
+            var findVilla = await _db.villas.FirstOrDefaultAsync(v => v.Id == id);
             if(findVilla == null)
             {
                 return NotFound();  
             }
             _db.villas.Remove(findVilla);
-            return Ok();
+            await _db.SaveChangesAsync();
+            return Ok("Delete with id " + id);
         }
 
 
         [HttpPut]
-        public ActionResult<VillaDto> updateVilla([FromBody] VillaDto villaDto)
+        public async Task<ActionResult<VillaDto>> updateVilla([FromBody] VillaUpdateDto villaDto)
         {
             if (!ModelState.IsValid)
             {
@@ -89,7 +91,7 @@ namespace MagicVilla_VillaAPI.Controllers
             {
                 return BadRequest();
             }
-            var villaFind = _db.villas.FirstOrDefault(u => u.Id == villaDto.Id);
+            var villaFind = await  _db.villas.AsNoTracking().FirstOrDefaultAsync(u => u.Id == villaDto.Id);
             if(villaFind == null)
             {
                 return NotFound();
@@ -106,7 +108,7 @@ namespace MagicVilla_VillaAPI.Controllers
                 Sqft = villaDto.Sqft
             };
             _db.villas.Update(model);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
 
 
 
