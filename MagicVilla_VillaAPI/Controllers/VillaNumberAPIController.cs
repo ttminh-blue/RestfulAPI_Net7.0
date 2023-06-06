@@ -9,18 +9,21 @@ using MagicVilla_VillaAPI.Models.Dto;
 
 namespace MagicVilla_VillaAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/VillaNumberAPI")]
     [ApiController]
     public class VillaNumberAPIController : Controller
     {       
         private readonly IVillaNumberRepository _dbVillaNumber;
         private  readonly IMapper _mapper;
+        private readonly IVillaRepository _dbVilla;
+
         protected APIResponse _response;
-        public VillaNumberAPIController(IVillaNumberRepository dbVillaNumber, IMapper mapper, APIResponse response)
+        public VillaNumberAPIController(IVillaNumberRepository dbVillaNumber, IMapper mapper, APIResponse response, IVillaRepository dbVilla)
         {
             _dbVillaNumber = dbVillaNumber;
             _mapper = mapper;
             _response = response;
+            _dbVilla = dbVilla;
         }
 
         [HttpGet]
@@ -80,6 +83,14 @@ namespace MagicVilla_VillaAPI.Controllers
                 if(createVillaDto == null)
                 {
                     return BadRequest();
+                }
+                if(await _dbVillaNumber.GetOne(u => u.VillaNo == createVillaDto.VillaNo) != null)
+                {
+                    return BadRequest(ModelState);
+                }
+                if(await _dbVilla.GetOne(u => u.Id == createVillaDto.VillaNo) == null)
+                {
+                    return BadRequest(ModelState);
                 }
 
                 var idNew = await _dbVillaNumber.GetLength() + 1;
@@ -152,6 +163,11 @@ namespace MagicVilla_VillaAPI.Controllers
                 if (updateVillaDto == null)
                 {
                     return BadRequest();
+                }
+               
+                if (await _dbVilla.GetOne(u => u.Id == updateVillaDto.VillaNo) == null)
+                {
+                    return BadRequest(ModelState);
                 }
                 var villaFind = await  _dbVillaNumber.GetOne(u => u.VillaNo == updateVillaDto.VillaNo, false);
                 if(villaFind == null)
