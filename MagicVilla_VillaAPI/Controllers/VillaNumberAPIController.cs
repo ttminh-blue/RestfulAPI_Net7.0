@@ -56,7 +56,7 @@ namespace MagicVilla_VillaAPI.Controllers
                 {
                     return NotFound();
                 }
-                _response.Result = _mapper.Map<List<VillaNumberDto>>(VillaDto);
+                _response.Result = _mapper.Map<VillaNumberDto>(VillaDto);
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
                 return Ok(_response);
@@ -96,7 +96,7 @@ namespace MagicVilla_VillaAPI.Controllers
                 await _dbVillaNumber.Create(model);
                 await _dbVillaNumber.Save();
 
-                _response.Result = _mapper.Map<List<VillaNumberDto>>(model);
+                _response.Result = _mapper.Map<VillaNumberDto>(model);
                 _response.StatusCode = HttpStatusCode.Created;
                 _response.IsSuccess = true;
 
