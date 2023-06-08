@@ -4,9 +4,11 @@ namespace MagicVilla_VillaAPI.Models
 {
     public class VillaNumberDto
     {
-        [Required]
-        public int VillaNo { get; set; }
-
-        public string SpecialDetails { get; set; }
-    }
+		[Required]
+		public int VillaNo { get; set; }
+		[Required]
+		public int VillaID { get; set; }
+		public string SpecialDetails { get; set; }
+		public VillaDto Villa { get; set; }
+	}
 }

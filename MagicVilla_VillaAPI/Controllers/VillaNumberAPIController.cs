@@ -31,9 +31,8 @@ namespace MagicVilla_VillaAPI.Controllers
         {
             try
             {
-                IEnumerable<VillaNumber> villaList = await _dbVillaNumber.GetAll();
-
-                _response.Result = _mapper.Map<List<VillaNumberDto>>(villaList);
+				IEnumerable<VillaNumber> villaNumberList = await _dbVillaNumber.GetAll(includeProperties: "Villa");
+				_response.Result = _mapper.Map<List<VillaNumberDto>>(villaNumberList);
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
                 return Ok(_response);
