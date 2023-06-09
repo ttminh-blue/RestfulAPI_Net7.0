@@ -14,9 +14,9 @@ namespace MagicVilla_Web.Controllers
     {
         private readonly IVillaNumberService _villaNumberService;
         private readonly IMapper _mapper;
-        public VillaNumberController(IVillaNumberService villaService, IMapper mapper)
+        public VillaNumberController(IVillaNumberService villaNumberService, IMapper mapper)
         {
-            _villaNumberService = villaService;
+            _villaNumberService = villaNumberService;
             _mapper = mapper;
         }
 
@@ -56,10 +56,10 @@ namespace MagicVilla_Web.Controllers
         
         public async Task<IActionResult> UpdateVillaNumber(int id)
         {
-			VillaDto element = new();
+            VillaNumberDto element = new();
 			var response = await _villaNumberService.GetAsync<APIResponse>(id);
             if (response != null && response.IsSuccess) {
-				element = JsonConvert.DeserializeObject<VillaDto>(Convert.ToString(response.Result));
+				element = JsonConvert.DeserializeObject<VillaNumberDto>(Convert.ToString(response.Result));
                 return View(_mapper.Map<VillaUpdateDto>(element));
             }
             return NotFound();
@@ -90,7 +90,7 @@ namespace MagicVilla_Web.Controllers
             if (response != null && response.IsSuccess)
             {
                 element = JsonConvert.DeserializeObject<VillaNumberDto>(Convert.ToString(response.Result));
-                return View(_mapper.Map<VillaDto>(element));
+                return View(_mapper.Map<VillaNumberDto>(element));
             }
             return NotFound();
 
@@ -102,7 +102,7 @@ namespace MagicVilla_Web.Controllers
 
 			try
 			{
-				var response = await _villaNumberService.DeleteAsync<APIResponse>(model.VillaNo);
+				var response = await _villaNumberService.DeleteAsync<APIResponse>(6);
 
 				if (response != null && response.IsSuccess)
 				{

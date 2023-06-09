@@ -6,9 +6,9 @@ namespace MagicVilla_Web.Models
     {
         [Required]
         public int VillaNo { get; set; }
-
+        [Required]
+        public int VillaID { get; set; }
         public string SpecialDetails { get; set; }
-		public VillaDto Villa { get; set; }
-            
-	}
+        public VillaDto Villa { get; set; }
+    }
 }
