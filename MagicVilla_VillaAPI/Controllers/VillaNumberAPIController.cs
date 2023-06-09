@@ -85,14 +85,16 @@ namespace MagicVilla_VillaAPI.Controllers
                 }
                 if(await _dbVillaNumber.GetOne(u => u.VillaNo == createVillaDto.VillaNo) != null)
                 {
+                    ModelState.AddModelError("ErrorMessages", "Villa Number already Exists!");
                     return BadRequest(ModelState);
                 }
-                if(await _dbVilla.GetOne(u => u.Id == createVillaDto.VillaNo) == null)
+                if(await _dbVilla.GetOne(u => u.Id == createVillaDto.villaID) == null)
                 {
+                    ModelState.AddModelError("ErrorMessages", "Villa ID is Invalid!");
                     return BadRequest(ModelState);
                 }
 
-                var idNew = await _dbVillaNumber.GetLength() + 1;
+                var idNew = createVillaDto.VillaNo;
 
 
                 VillaNumber model = new()
@@ -104,7 +106,6 @@ namespace MagicVilla_VillaAPI.Controllers
                   
                 };
                 await _dbVillaNumber.Create(model);
-                await _dbVillaNumber.Save();
 
                 _response.Result = _mapper.Map<VillaNumberDto>(model);
                 _response.StatusCode = HttpStatusCode.Created;
