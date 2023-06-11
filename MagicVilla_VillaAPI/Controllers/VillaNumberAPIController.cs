@@ -102,6 +102,7 @@ namespace MagicVilla_VillaAPI.Controllers
                     SpecialDetails = createVillaDto.SpecialDetails,
                     UpdatedDate = DateTime.Now,
                     VillaNo = idNew,
+                    villaID = createVillaDto.villaID,
                     CreatedDate = DateTime.Now
                   
                 };
@@ -140,7 +141,7 @@ namespace MagicVilla_VillaAPI.Controllers
 
                 _response.StatusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
-                return Ok("Delete with id " + id);
+                return Ok(_response);
             }
             catch (Exception e)
             {
@@ -165,23 +166,25 @@ namespace MagicVilla_VillaAPI.Controllers
                     return BadRequest();
                 }
                
-                if (await _dbVilla.GetOne(u => u.Id == updateVillaDto.VillaNo) == null)
-                {
-                    return BadRequest(ModelState);
-                }
-                var villaFind = await  _dbVillaNumber.GetOne(u => u.VillaNo == updateVillaDto.VillaNo, false);
+               
+                var villaFind = await  _dbVillaNumber.GetOne(u => u.VillaNo == updateVillaDto.VillaNo);
                 if(villaFind == null)
                 {
                     return NotFound();
                 }
-                VillaNumber model = _mapper.Map<VillaNumber>(updateVillaDto);
+				var getVilla = await _dbVilla.GetOne(u => u.Id == villaFind.villaID);
+
+
+				VillaNumber model = _mapper.Map<VillaNumber>(villaFind);
+                
+                model.SpecialDetails = updateVillaDto?.SpecialDetails;
+                model.Villa = getVilla;
                 await _dbVillaNumber.Update(model);
-                await _dbVillaNumber.Save();
 
                 _response.StatusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
 
-                return Ok("Updated !!!");
+                return Ok(_response);
             }
             catch (Exception e)
             {

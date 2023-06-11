@@ -57,6 +57,7 @@ namespace MagicVilla_VillaAPI.Repository
             IQueryable<T> query = dbSet;
             if (filter != null)
             {
+                query = query.AsNoTracking();
                 query = query.Where(filter);
             }
             var result = await query.ToListAsync();
