@@ -24,7 +24,6 @@ namespace MagicVilla_VillaAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async  Task<ActionResult<APIResponse>> GetVillas()
         {
             try
@@ -44,7 +43,6 @@ namespace MagicVilla_VillaAPI.Controllers
                 return BadRequest(_response);
             }
         }
-		[Authorize(Roles = "Admin")]
 		[HttpGet("{id:int}", Name = "getOneVilla")]
         public async Task<ActionResult<APIResponse>> getOneVilla(int id)
         {
@@ -124,7 +122,7 @@ namespace MagicVilla_VillaAPI.Controllers
             }
         }
         [HttpDelete("{id:int}", Name = "DeleteOneVilla")]
-		[Authorize(Roles = "Custom")]
+		[Authorize(Roles = "Admin")]
 
 		public async Task<ActionResult<APIResponse>> DeleteOneVilla(int id)
         {
@@ -157,6 +155,8 @@ namespace MagicVilla_VillaAPI.Controllers
 
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult<APIResponse>> updateVilla([FromBody] VillaUpdateDto updateVillaDto)
         {
             try { 

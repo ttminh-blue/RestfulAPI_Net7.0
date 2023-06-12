@@ -6,6 +6,8 @@ using AutoMapper;
 using MagicVilla_VillaAPI.Repository.IRepository;
 using System.Net;
 using MagicVilla_VillaAPI.Models.Dto;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace MagicVilla_VillaAPI.Controllers
 {
@@ -72,6 +74,8 @@ namespace MagicVilla_VillaAPI.Controllers
             }
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult<APIResponse>> createNewVillaNumber([FromBody] VillaNumberCreateDto createVillaDto)
         {
             try { 
@@ -123,6 +127,8 @@ namespace MagicVilla_VillaAPI.Controllers
             }
         }
         [HttpDelete("{id:int}", Name = "DeleteOneVillaNumber")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult<APIResponse>> DeleteOneVillaNumber(int id)
         {
             try { 
@@ -154,6 +160,8 @@ namespace MagicVilla_VillaAPI.Controllers
 
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult<APIResponse>> updateVillaNumber([FromBody] VillaNumberUpdateDto updateVillaDto)
         {
             try { 
