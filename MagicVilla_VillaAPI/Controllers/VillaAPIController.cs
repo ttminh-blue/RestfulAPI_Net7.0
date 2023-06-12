@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using MagicVilla_VillaAPI.Repository.IRepository;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MagicVilla_VillaAPI.Controllers
 {
@@ -23,6 +24,7 @@ namespace MagicVilla_VillaAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async  Task<ActionResult<APIResponse>> GetVillas()
         {
             try
@@ -42,7 +44,8 @@ namespace MagicVilla_VillaAPI.Controllers
                 return BadRequest(_response);
             }
         }
-        [HttpGet("{id:int}", Name = "getOneVilla")]
+		[Authorize(Roles = "Admin")]
+		[HttpGet("{id:int}", Name = "getOneVilla")]
         public async Task<ActionResult<APIResponse>> getOneVilla(int id)
         {
             try { 
@@ -70,7 +73,9 @@ namespace MagicVilla_VillaAPI.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+		[Authorize(Roles = "Admin")]
+
+		[ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<APIResponse>> createNewVilla([FromBody] VillaCreateDto createVillaDto)
@@ -119,7 +124,9 @@ namespace MagicVilla_VillaAPI.Controllers
             }
         }
         [HttpDelete("{id:int}", Name = "DeleteOneVilla")]
-        public async Task<ActionResult<APIResponse>> DeleteOneVilla(int id)
+		[Authorize(Roles = "Custom")]
+
+		public async Task<ActionResult<APIResponse>> DeleteOneVilla(int id)
         {
             try { 
                 if(id == null || id == 0 )

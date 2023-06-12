@@ -22,6 +22,7 @@ builder.Services.AddScoped<IRepository<Villa>, Repository<Villa>>();
 builder.Services.AddScoped<IRepository<VillaNumber>, Repository<VillaNumber>>();
 
 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddSingleton<APIResponse>();
 builder.Services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();

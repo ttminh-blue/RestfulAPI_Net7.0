@@ -9,11 +9,12 @@ namespace MagicVilla_VillaAPI.Data
         public DbSet<Villa> villas { get; set; }
 
         public DbSet<VillaNumber> villaNumber { get; set; }
+		public DbSet<LocalUser> localUser { get; set; }
 
 
 
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Villa>().HasData(
                 new Villa
