@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MagicVilla_VillaAPI.Controllers
 {
-	[Route("api/UsersAuth")]
+	[Route("api/v{version:apiVersion}/UsersAuth")]
 	[ApiController]
-	public class UserController : Controller
+    [ApiVersion("1.0")]
+
+    public class UserController : Controller
 	{
 		private readonly IUserRepository _userRepository;
 		protected APIResponse _response;

@@ -11,8 +11,12 @@ using System.Data;
 
 namespace MagicVilla_VillaAPI.Controllers
 {
-    [Route("api/VillaNumberAPI")]
+    [Route("api/v{version:apiVersion}/VillaNumberAPI")]
+
     [ApiController]
+    [ApiVersion("1.0")]
+
+
     public class VillaNumberAPIController : Controller
     {       
         private readonly IVillaNumberRepository _dbVillaNumber;
@@ -47,6 +51,19 @@ namespace MagicVilla_VillaAPI.Controllers
                 return BadRequest(_response);
             }
         }
+
+       /* [HttpGet]
+        [MapToApiVersion("1.0")]
+
+        public IEnumerable<string> Get()
+        {
+            return new string[]
+            {
+                "value1", "value2"
+            };
+        }*/
+
+
         [HttpGet("{id:int}", Name = "getOneVillaNumber")]
         public async Task<ActionResult<APIResponse>> getOneVillaNumber(int id)
         {
