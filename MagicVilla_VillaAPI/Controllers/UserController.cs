@@ -40,6 +40,7 @@ namespace MagicVilla_VillaAPI.Controllers
 		[HttpPost("register")]
 		public async Task<IActionResult> Register([FromBody] RegisterationRequestDto model)
 		{
+			model.Role = "Customer";
 			var user = _userRepository.Register(model);
 
 			if(user.Result == null)
