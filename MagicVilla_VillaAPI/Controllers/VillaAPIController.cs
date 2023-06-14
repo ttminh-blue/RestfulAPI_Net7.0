@@ -6,7 +6,8 @@ using AutoMapper;
 using MagicVilla_VillaAPI.Repository.IRepository;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
-
+using Microsoft.IdentityModel.Tokens;
+using System.Text.Json;
 namespace MagicVilla_VillaAPI.Controllers
 {
     [Route("api/v{version:apiVersion}/VillaAPI")]
@@ -17,6 +18,9 @@ namespace MagicVilla_VillaAPI.Controllers
         private readonly IVillaRepository _dbVilla;
         private  readonly IMapper _mapper;
         protected APIResponse _response;
+        private const int pageSizeDefault = 0;
+        private const int pageNumberDefault = 1;
+
         public VillaAPIController (IVillaRepository dbVilla, IMapper mapper, APIResponse response)
         {
             _dbVilla = dbVilla;
@@ -25,12 +29,50 @@ namespace MagicVilla_VillaAPI.Controllers
         }
 
         [HttpGet]
-        public async  Task<ActionResult<APIResponse>> GetVillas()
+        /*[ResponseCache(Duration = 30, Location = ResponseCacheLocation.None, NoStore = true)]*/
+        public async  Task<ActionResult<APIResponse>> GetVillas([FromQuery(Name = "filterOccupancy")]int? occupancy, [FromQuery] string? searchName, 
+            [FromQuery]int? pageSize, [FromQuery]int? pageNumber)
         {
             try
             {
-                IEnumerable<Villa> villaList = await _dbVilla.GetAll();
+                int newPageSize, newPageNumber;
 
+                if(pageSize == null)
+                {
+                    newPageSize = 0;
+                }
+                else
+                {
+                    newPageSize =  pageSize.Value;
+                }
+                if(pageNumber == null)
+                {
+                    newPageNumber = 1;
+                }
+                else
+                {
+                    newPageNumber = pageNumber.Value;
+                }
+                
+                IEnumerable<Villa> villaList;
+                if(occupancy > 0)
+                {
+                    villaList = await _dbVilla.GetAll(y => y.Occupancy == occupancy, null , newPageSize, newPageNumber);
+                }
+                else
+                {
+                    villaList = await _dbVilla.GetAll(pageSize: newPageSize, pageNumber : newPageNumber);
+                }
+                if (!searchName.IsNullOrEmpty())
+                {
+                    villaList = villaList.Where(u =>  u.Name.ToLower().Contains(searchName));
+                }
+                Pagination pagination = new Pagination()
+                {
+                    pageNumber = newPageNumber,
+                    pageSize = newPageSize
+                };
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
                 _response.Result = _mapper.Map<List<VillaDto>>(villaList);
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
@@ -45,6 +87,7 @@ namespace MagicVilla_VillaAPI.Controllers
             }
         }
 		[HttpGet("{id:int}", Name = "getOneVilla")]
+        [ResponseCache(Duration = 30)]
         public async Task<ActionResult<APIResponse>> getOneVilla(int id)
         {
             try { 

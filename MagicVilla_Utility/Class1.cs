@@ -8,5 +8,7 @@
             POST, PUT, DELETE
         }
         public static string SessionToken = "Token";
+
+        public static string Role = "Admin";
     }
 }

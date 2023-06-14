@@ -7,6 +7,6 @@ namespace MagicVilla_VillaAPI.Repository.IRepository
 	{
 		bool IsUniqueUser(string username);
 		Task<LoginResponseDto> Login(LoginRequestDto loginRequestDTO);
-		Task<LocalUser> Register(RegisterationRequestDto registerationRequestDTO);
+		Task<UserDto> Register(RegisterationRequestDto registerationRequestDTO);
 	}
 }

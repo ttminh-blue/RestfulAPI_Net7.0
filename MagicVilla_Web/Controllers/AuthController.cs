@@ -19,7 +19,7 @@ namespace MagicVilla_Web.Controllers
         }
         public IActionResult Login()
 		{
-			LoginRequestDto data= new();
+			LoginRequestDto data = new();
 			return View(data);
 		}
 		[HttpPost]
@@ -38,6 +38,9 @@ namespace MagicVilla_Web.Controllers
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
                 HttpContext.Session.SetString(SD.SessionToken, temp.Token);
+                HttpContext.Session.SetString(SD.Role, temp.User.Role);
+
+
                 return RedirectToAction("Index", "Home");
             }
 			else

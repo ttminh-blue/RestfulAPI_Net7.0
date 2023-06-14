@@ -26,15 +26,16 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Villa" asp-action="IndexVilla">Villa</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="VillaNumber" asp-action="IndexVillaNumber">Villa Number </a>
-                        </li>
-
-                        @*@if (httpAcc.HttpContext.Session.GetString(SD.SessionToken) != null && httpAcc.HttpContext.Session.GetString(SD.SessionToken).ToString().Length > 0)
-                        *@
+                            @if (httpAcc.HttpContext.Session.GetString(SD.Role) != null && httpAcc.HttpContext.Session.GetString(SD.Role).ToString() == "Admin")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Villa" asp-action="IndexVilla">Villa</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="VillaNumber" asp-action="IndexVillaNumber">Villa Number </a>
+                                </li>
+                            }
+                          
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Logout">Logout </a>
                             </li>
@@ -47,12 +48,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Login">Login </a>
                         </li>
                         }    
-                      @*  <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Register">Register </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Login">Login </a>
-                        </li>*@
+                    
 
                     </ul>
                 </div>
