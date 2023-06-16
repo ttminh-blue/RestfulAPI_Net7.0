@@ -17,6 +17,7 @@ namespace MagicVilla_VillaAPI.Controllers
         public UserController(IUserRepository userRepository, APIResponse res)
         {
 			_userRepository = userRepository;
+			res.ErrorMessages = new List<string>();
 			_response = res;
 
 		}
@@ -28,8 +29,7 @@ namespace MagicVilla_VillaAPI.Controllers
 			{
 				_response.StatusCode = System.Net.HttpStatusCode.BadRequest;
 				_response.IsSuccess = false;
-/*				_response.ErrorMessages.Add("Username or password is incorrect.");
-*/				return BadRequest(_response); 
+				return BadRequest(_response); 
 			}
 			_response.StatusCode = System.Net.HttpStatusCode.OK;
 			_response.IsSuccess = true;
@@ -43,11 +43,16 @@ namespace MagicVilla_VillaAPI.Controllers
 			model.Role = "Customer";
 			var user = _userRepository.Register(model);
 
-			if(user.Result == null)
+			if(user.Result.Errors != null)
 			{
 				_response.StatusCode = System.Net.HttpStatusCode.BadRequest;
 				_response.IsSuccess = false;
-		/*		_response.ErrorMessages.Add("User already exists");*/
+				foreach(var i in user.Result.Errors)
+				{
+					string tmp = (string)i.Description;
+					_response.ErrorMessages.Add(tmp);
+				}
+				
 				return BadRequest(_response);	
 			}
 			_response.StatusCode = System.Net.HttpStatusCode.OK;

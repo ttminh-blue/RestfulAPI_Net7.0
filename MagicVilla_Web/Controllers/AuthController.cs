@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using NuGet.Protocol;
 
 namespace MagicVilla_Web.Controllers
 {
@@ -31,14 +34,20 @@ namespace MagicVilla_Web.Controllers
             {
                 LoginResponseDto temp = JsonConvert.DeserializeObject<LoginResponseDto>(Convert.ToString(result.Result));
 
+
+
+                var handler = new JwtSecurityTokenHandler();
+                var jwt = handler.ReadJwtToken(temp.Token);
+
+
                 var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-                identity.AddClaim(new Claim(ClaimTypes.Name, temp.User.UserName));
-                identity.AddClaim(new Claim(ClaimTypes.Role, temp.User.Role));
+                identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.FirstOrDefault(u => u.Type == "unique_name").Value));
+                identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u => u.Type == "role").Value));
                 var principal = new ClaimsPrincipal(identity);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
                 HttpContext.Session.SetString(SD.SessionToken, temp.Token);
-                HttpContext.Session.SetString(SD.Role, temp.User.Role);
+                HttpContext.Session.SetString(SD.Role, jwt.Claims.FirstOrDefault(u => u.Type == "role").Value);
 
 
                 return RedirectToAction("Index", "Home");
@@ -54,7 +63,9 @@ namespace MagicVilla_Web.Controllers
 		public IActionResult Register()
 		{
 			RegisterationRequestDto data = new();
-			return View(data);
+			ViewData["Error"] = "None";
+			ViewBag.ErrorMessages = "";
+            return View(data);
 		}
 		[HttpPost]
 		public async Task<IActionResult> Register(RegisterationRequestDto model)
@@ -64,6 +75,12 @@ namespace MagicVilla_Web.Controllers
 			{
 				return RedirectToAction("Login");
 			}
+			if(result.ErrorMessages.Count() > 0)
+			{
+                ViewData["Error"] = "Has Error";
+                ViewBag.ErrorMessages = result.ErrorMessages;
+            }
+			
 
 			return View();
 		}

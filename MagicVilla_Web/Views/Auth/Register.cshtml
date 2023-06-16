@@ -7,7 +7,9 @@
             <h1>Register</h1>
         </div>
         <div class="row text-center">
-            <div asp-validation-summary="All" class="text-danger"></div>
+            <div asp-validation-summary="All" class="text-danger">
+
+            </div>
         </div>
         <div class="row">
             <div class="col-6 offset-3 pb-2">
@@ -25,6 +27,23 @@
                 <button type="submit" class="form-control btn-success" value="Submit">Register</button>
 
             </div>
+            @if (ViewData["Error"] == "None")
+            {
+                
+            }
+            else
+            {
+                <ul class="list-unstyled">
+
+                    @foreach (var std in ViewBag.ErrorMessages)
+                    {
+                        <li class="text-danger text-center justify-content-center">
+                            @std
+                        </li>
+                    }
+                </ul>
+            }
+            
         </div>
     </div>
 
