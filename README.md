@@ -1,4 +1,14 @@
-# RestfulAPI_Net7.0
+# Repository: RestfulAPI_Net7.0
+
+# Information
+
+Fullname: Trần Tuấn Minh
+
+Email: minhnhox792@gmail.com
+
+Location: Ho Chi Minh City, District 8
+
+School: Ho Chi Minh University Of Science - K20
 
 
 # Description
