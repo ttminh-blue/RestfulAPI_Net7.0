@@ -8,6 +8,8 @@ Email: minhnhox792@gmail.com
 
 Location: Ho Chi Minh City, District 8
 
+Facebook: https://www.facebook.com/ttminh.blue/
+
 School: Ho Chi Minh University Of Science - K20
 
 
