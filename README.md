@@ -25,3 +25,5 @@ trantuanminh123/Admin123* (Admin)
 Front-end: Razor Page
 
 Back-end: ASP.NET Core MVC 7.0
+
+Database: SQL Server
