@@ -28,7 +28,8 @@ Link Web: https://bluewebvilla.azurewebsites.net/
 
 ### Sample account: [username/password]
 
-ttminh123/Admin123* (Customer)
+ttminh123/Admin123* (Customer)  
+
 trantuanminh123/Admin123* (Admin)
 
 
